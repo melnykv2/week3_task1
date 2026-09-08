@@ -1,6 +1,6 @@
 resource "aws_launch_template" "nodejs-demo-launch-template" {
-  name = "NodeJS Launch Template"
-  image_id = ami-0fb110df4c5094d21
+  name = "NodeJS-Launch-Template"
+  image_id = "ami-0fb110df4c5094d21"
   instance_type = "t3.micro"
   update_default_version = true
   key_name = "nodejs-demo"
@@ -15,5 +15,5 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
     security_groups = [aws_security_group.launch-template-sg.id]
   }
 
-  user_data = file("../../user_data/user_data.sh")
+  user_data = base64encode(file("../../user_data/user_data.sh"))
 }
