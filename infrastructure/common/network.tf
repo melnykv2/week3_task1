@@ -105,3 +105,46 @@ resource "aws_route_table_association" "private-route-table-association-c" {
   subnet_id      = aws_subnet.private_subnet_c.id
   route_table_id = aws_route_table.private-route-table.id
 }
+
+resource "aws_security_group" "launch-template-sg" {
+  name = "${local.name_prefix}-launch-template-sg"
+  description = "Allow SSH and HTTP access"
+  vpc_id = aws_vpc.nodejs-demo-vpc.id
+
+  dynamic "ingress" {
+    for_each = ["80", "22"]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "ALB-sg" {
+  name = "${local.name_prefix}-ALB-sg"
+  description = "Allow ALB access on port 80"
+  vpc_id = aws_vpc.nodejs-demo-vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
