@@ -34,7 +34,7 @@ resource "aws_subnet" "public_subnet_c" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet-b"
+    Name = "public-subnet-c"
   }
 }
 
@@ -134,8 +134,8 @@ resource "aws_security_group" "launch-template-sg" {
   }
 }
 
-resource "aws_security_group" "ALB-sg" {
-  name = "ALB-sg"
+resource "aws_security_group" "alb-sg" {
+  name = "alb-sg"
   description = "Allow ALB access on port 80"
   vpc_id = aws_vpc.nodejs-demo-vpc.id
 

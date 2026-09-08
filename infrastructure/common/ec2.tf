@@ -43,7 +43,10 @@ resource "aws_lb" "nodejs-alb" {
   internal = false
   load_balancer_type = "application"
   security_groups = [aws_security_group.alb-sg.id]
-  subnets = aws_subnet.public_subnet_[*].id
+  subnets = [
+    aws_subnet.public_subnet_a.id,
+    aws_subnet.public_subnet_c.id
+  ]
 }
 
 resource "aws_lb_listener" "NodeJS-ALB-Listener" {
