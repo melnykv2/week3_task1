@@ -4,7 +4,7 @@ resource "aws_vpc" "nodejs-demo-vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${local.name_prefix}-vpc"
+    Name = "nodejs-vpc"
   }
 }
 
@@ -12,7 +12,7 @@ resource "aws_internet_gateway" "nodejs-demo-igw" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
 
   tags = {
-    Name = "${local.name_prefix}-igw"
+    Name = "nodejs-igw"
   }
 }
 
@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnet_a" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${local.name_prefix}-public-subnet-a"
+    Name = "public-subnet-a"
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_subnet" "public_subnet_c" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${local.name_prefix}-public-subnet-b"
+    Name = "public-subnet-b"
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_subnet" "private_subnet_a" {
   availability_zone = "us-west-1a"
 
   tags = {
-    Name = "${local.name_prefix}-private-subnet-a"
+    Name = "private-subnet-a"
   }
 }
 
@@ -54,7 +54,7 @@ resource "aws_subnet" "private_subnet_c" {
   availability_zone = "us-west-1c"
 
   tags = {
-    Name = "${local.name_prefix}-private-subnet-c"
+    Name = "private-subnet-c"
   }
 }
 
@@ -63,27 +63,32 @@ resource "aws_nat_gateway" "nodejs-nat" {
   availability_mode = "regional"
 
   tags = {
-    Name = "${local.name_prefix}-nat"
+    Name = "nodejs-nat"
   }
 }
 resource "aws_route_table" "private-route-table" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  route = [
-    {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = aws_nat_gateway.nodejs-nat.id
-    }
-  ]
+
+  route {
+    cidr_block       = "0.0.0.0/0"
+    nat_gateway_id   = aws_nat_gateway.nodejs-nat.id
+  }
+
+  tags = {
+    Name = "private-route-table"
+  }
 }
 
 resource "aws_route_table" "public-route-table" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  route = [
-    {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = aws_internet_gateway.nodejs-demo-igw.id
-    }
-  ]
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.nodejs-demo-igw.id
+  }
+
+  tags = {
+    Name = "public-route-table"
+  }
 }
 
 resource "aws_route_table_association" "public-route-table-association-a" {
@@ -107,7 +112,7 @@ resource "aws_route_table_association" "private-route-table-association-c" {
 }
 
 resource "aws_security_group" "launch-template-sg" {
-  name = "${local.name_prefix}-launch-template-sg"
+  name = "launch-template-sg"
   description = "Allow SSH and HTTP access"
   vpc_id = aws_vpc.nodejs-demo-vpc.id
 
@@ -130,7 +135,7 @@ resource "aws_security_group" "launch-template-sg" {
 }
 
 resource "aws_security_group" "ALB-sg" {
-  name = "${local.name_prefix}-ALB-sg"
+  name = "ALB-sg"
   description = "Allow ALB access on port 80"
   vpc_id = aws_vpc.nodejs-demo-vpc.id
 
