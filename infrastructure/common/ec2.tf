@@ -49,7 +49,7 @@ resource "aws_lb" "nodejs-alb" {
   ]
 }
 
-resource "aws_lb_listener" "NodeJS-ALB-Listener" {
+resource "aws_lb_listener" "Nodejs-alb-listener" {
   load_balancer_arn = aws_lb.nodejs-alb.arn
   port = 80
   protocol = "HTTP"
@@ -57,4 +57,24 @@ resource "aws_lb_listener" "NodeJS-ALB-Listener" {
     type = "forward"
     target_group_arn = aws_lb_target_group.nodejs-target-group.arn
   }
+}
+
+module "asg" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  name = "NodeJS-ASG"
+
+  min_size = 1
+  max_size = 6
+  desired_capacity = 2
+  wait_for_capacity_timeout = "5m"
+  health_check_type = "ELB"
+  vpc_zone_identifier = ["aws_subnet.private_subnet_a.id", "aws_subnet.private_subnet_c.id"]
+
+  create_launch_template = false
+  launch_template_name = aws_launch_template.nodejs-launch-template.name
+  launch_template_version = aws_launch_template.nodejs-launch-template.latest_version
+
+  target_group_arn = aws_lb_target_group.nodejs-target-group.arn
+
+  instance_name = "NodeJS-Instance"
 }
