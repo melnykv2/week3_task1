@@ -18,7 +18,7 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
   user_data = base64encode(file("../../user_data/user_data.sh"))
 }
 
-resource "aws_lb_target_group" "Nodejs-Target-Group" {
+resource "aws_lb_target_group" "nodejs-target-group" {
   name = "Nodejs-Target-Group"
   port = 80
   protocol = "HTTP"
@@ -35,5 +35,23 @@ resource "aws_lb_target_group" "Nodejs-Target-Group" {
     protocol = "HTTP"
     interval = 15
     timeout = 5
+  }
+}
+
+resource "aws_lb" "nodejs-alb" {
+  name = "NodeJS-Load-Balancer"
+  internal = false
+  load_balancer_type = "application"
+  security_groups = [aws_security_group.alb-sg.id]
+  subnets = aws_subnet.public_subnet_[*].id
+}
+
+resource "aws_lb_listener" "NodeJS-ALB-Listener" {
+  load_balancer_arn = aws_lb.nodejs-alb.arn
+  port = 80
+  protocol = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.nodejs-target-group.arn
   }
 }
