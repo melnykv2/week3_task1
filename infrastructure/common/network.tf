@@ -18,8 +18,8 @@ resource "aws_internet_gateway" "nodejs-demo-igw" {
 
 resource "aws_subnet" "public_subnet_a" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "us-west-1a"
+  cidr_block = var.public_subnet_a
+  availability_zone = var.az_a
   map_public_ip_on_launch = true
 
   tags = {
@@ -29,8 +29,8 @@ resource "aws_subnet" "public_subnet_a" {
 
 resource "aws_subnet" "public_subnet_c" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = "us-west-1c"
+  cidr_block = var.public_subnet_c
+  availability_zone = var.az_c
   map_public_ip_on_launch = true
 
   tags = {
@@ -40,8 +40,8 @@ resource "aws_subnet" "public_subnet_c" {
 
 resource "aws_subnet" "private_subnet_a" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = "10.0.11.0/24"
-  availability_zone = "us-west-1a"
+  cidr_block = var.private_subnet_a
+  availability_zone = var.az_a
 
   tags = {
     Name = "private-subnet-a"
@@ -50,8 +50,8 @@ resource "aws_subnet" "private_subnet_a" {
 
 resource "aws_subnet" "private_subnet_c" {
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = "10.0.22.0/24"
-  availability_zone = "us-west-1c"
+  cidr_block = var.private_subnet_c
+  availability_zone = var.az_c
 
   tags = {
     Name = "private-subnet-c"

@@ -81,9 +81,9 @@ module "nodejs-asg" {
   name = "NodeJS-ASG"
   instance_name = "NodeJS-Instance"
 
-  min_size = 1
-  max_size = 6
-  desired_capacity = 2
+  min_size = var.asg_min_size
+  max_size = var.asg_max_size
+  desired_capacity = var.asg_desired_capacity
   wait_for_capacity_timeout = "5m"
   default_instance_warmup = 150
   health_check_type = "ELB"
@@ -112,7 +112,7 @@ module "nodejs-asg" {
         predefined_metric_specification = {
           predefined_metric_type = "ASGAverageCPUUtilization"
         }
-        target_value = 50
+        target_value = var.cpu_scale_out_threshold
         estimated_instance_warmup = 150
       }
     }

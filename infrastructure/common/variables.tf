@@ -20,15 +20,46 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "availability_zone_count" {
-  description = "Number of Availability Zones/public subnets used by ALB and ASG."
-  type        = number
-  default     = 2
+variable "public_subnet_a" {
+  description = "CIDR block for the public subnet A."
+  type        = string
+  default     = "10.0.1.0/24"
+}
 
-  validation {
-    condition     = var.availability_zone_count >= 2 && var.availability_zone_count <= 3
-    error_message = "availability_zone_count must be 2 or 3."
-  }
+variable "public_subnet_c" {
+  description = "CIDR block for the public subnet C"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "private_subnet_a" {
+  description = "CIDR block for the private subnet A"
+  type        = string
+  default     = "10.0.11.0/24"
+}
+
+variable "private_subnet_c" {
+  description = "CIDR block for the private subnet C"
+  type        = string
+  default     = "10.0.22.0/24"
+}
+
+variable "az_a" {
+  description = "AZ for subnets A"
+  type        = string
+  default     = "us-west-1a"
+}
+
+variable "az_c" {
+  description = "AZ for subnets C"
+  type        = string
+  default     = "us-west-1c"
+}
+
+variable "az_c" {
+  description = "AZ for subnets C"
+  type        = string
+  default     = ""
 }
 
 variable "instance_type" {
