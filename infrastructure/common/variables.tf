@@ -92,12 +92,6 @@ variable "asg_desired_capacity" {
   default     = 2
 }
 
-variable "app_port" {
-  description = "Port exposed by the Node.js application container."
-  type        = number
-  default     = 3000
-}
-
 variable "alb_port" {
   description = "Public HTTP listener port on the Application Load Balancer."
   type        = number
@@ -119,13 +113,13 @@ variable "cpu_scale_out_threshold" {
   type        = number
   default     = 50
 }
-
+/*
 variable "cpu_scale_in_threshold" {
   description = "Average CPU percentage that triggers scale in."
   type        = number
   default     = 20
 }
-
+*/
 variable "alarm_evaluation_periods" {
   description = "Number of consecutive one-minute periods required to trigger scaling alarms."
   type        = number
