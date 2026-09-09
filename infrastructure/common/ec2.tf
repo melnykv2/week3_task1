@@ -1,6 +1,6 @@
 resource "aws_launch_template" "nodejs-demo-launch-template" {
   name = "NodeJS-Launch-Template"
-  image_id = "ami-0fb110df4c5094d21"
+  image_id = var.ami_id
   instance_type = var.instance_type
   update_default_version = true
   key_name = var.node_key
@@ -15,6 +15,12 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
     security_groups = [aws_security_group.launch-template-sg.id]
   }
 
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens = "required"
+    http_put_response_hop_limit = 1
+  }
+
   user_data = base64encode(file("../../user_data/user_data.sh"))
 
   tags = {
@@ -24,7 +30,7 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
 
 resource "aws_lb_target_group" "nodejs-target-group" {
   name = "Nodejs-Target-Group"
-  port = var.alb_port
+  port = 80
   protocol = "HTTP"
   target_type = "instance"
   vpc_id = aws_vpc.nodejs-demo-vpc.id
@@ -51,10 +57,7 @@ resource "aws_lb" "nodejs-alb" {
   internal = false
   load_balancer_type = "application"
   security_groups = [aws_security_group.alb-sg.id]
-  subnets = [
-    aws_subnet.public_subnet_a.id,
-    aws_subnet.public_subnet_c.id
-  ]
+  subnets = aws_subnet.public_subnet[*].id
 
   tags = {
     Name = "NodeJS-Load-Balancer"
@@ -87,10 +90,7 @@ module "nodejs-asg" {
   wait_for_capacity_timeout = "5m"
   default_instance_warmup = 150
   health_check_type = "ELB"
-  vpc_zone_identifier = [
-    aws_subnet.private_subnet_a.id,
-    aws_subnet.private_subnet_c.id
-  ]
+  vpc_zone_identifier = aws_subnet.private_subnet[*].id
 
   create_launch_template = false
   launch_template_id = aws_launch_template.nodejs-demo-launch-template.id
@@ -112,7 +112,7 @@ module "nodejs-asg" {
         predefined_metric_specification = {
           predefined_metric_type = "ASGAverageCPUUtilization"
         }
-        target_value = var.cpu_scale_out_threshold
+        target_value = 50
         estimated_instance_warmup = 150
       }
     }

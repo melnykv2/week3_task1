@@ -16,45 +16,26 @@ resource "aws_internet_gateway" "nodejs-demo-igw" {
   }
 }
 
-resource "aws_subnet" "public_subnet_a" {
+resource "aws_subnet" "public_subnet" {
+  count = 2
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = var.public_subnet_a
-  availability_zone = var.az_a
+  cidr_block = var.public_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet-a"
+    Name = "public-subnet-${count.index + 1}"
   }
 }
 
-resource "aws_subnet" "public_subnet_c" {
+resource "aws_subnet" "private_subnet" {
+  count = 2
   vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = var.public_subnet_c
-  availability_zone = var.az_c
-  map_public_ip_on_launch = true
+  cidr_block = var.private_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
 
   tags = {
-    Name = "public-subnet-c"
-  }
-}
-
-resource "aws_subnet" "private_subnet_a" {
-  vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = var.private_subnet_a
-  availability_zone = var.az_a
-
-  tags = {
-    Name = "private-subnet-a"
-  }
-}
-
-resource "aws_subnet" "private_subnet_c" {
-  vpc_id = aws_vpc.nodejs-demo-vpc.id
-  cidr_block = var.private_subnet_c
-  availability_zone = var.az_c
-
-  tags = {
-    Name = "private-subnet-c"
+    Name = "private-subnet-${count.index + 1}"
   }
 }
 
@@ -91,6 +72,21 @@ resource "aws_route_table" "public-route-table" {
   }
 }
 
+resource "aws_route_table_association" "public_subnet_association" {
+  count = 2
+
+  subnet_id      = aws_subnet.public_subnet[count.index].id
+  route_table_id = aws_route_table.public-route-table.id
+}
+
+resource "aws_route_table_association" "private_subnet_association" {
+  count = 2
+
+  subnet_id      = aws_subnet.private_subnet[count.index].id
+  route_table_id = aws_route_table.private-route-table.id
+}
+
+/*
 resource "aws_route_table_association" "public-route-table-association-a" {
   subnet_id      = aws_subnet.public_subnet_a.id
   route_table_id = aws_route_table.public-route-table.id
@@ -110,7 +106,7 @@ resource "aws_route_table_association" "private-route-table-association-c" {
   subnet_id      = aws_subnet.private_subnet_c.id
   route_table_id = aws_route_table.private-route-table.id
 }
-
+*/
 resource "aws_security_group" "launch-template-sg" {
   name = "launch-template-sg"
   description = "Allow SSH and HTTP access"
