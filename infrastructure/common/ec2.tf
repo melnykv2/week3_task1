@@ -1,9 +1,9 @@
 resource "aws_launch_template" "nodejs-demo-launch-template" {
   name = "NodeJS-Launch-Template"
   image_id = "ami-0fb110df4c5094d21"
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
   update_default_version = true
-  key_name = "nodejs-demo"
+  key_name = var.node_key
 
   monitoring {
     enabled = true
@@ -24,7 +24,7 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
 
 resource "aws_lb_target_group" "nodejs-target-group" {
   name = "Nodejs-Target-Group"
-  port = 80
+  port = var.alb_port
   protocol = "HTTP"
   target_type = "instance"
   vpc_id = aws_vpc.nodejs-demo-vpc.id

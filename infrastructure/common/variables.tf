@@ -68,6 +68,12 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+variable "node_key" {
+  description = "Name of the SSH key pair for the Node.js instances."
+  type        = string
+  default     = "nodejs-demo"
+}
+
 variable "asg_min_size" {
   description = "Minimum number of instances in the Auto Scaling group."
   type        = number
