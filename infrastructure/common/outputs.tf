@@ -27,3 +27,8 @@ output "autoscaling_group_name" {
   description = "Autoscaling group name"
   value = module.nodejs-asg.autoscaling_group_name
 }
+
+output "sns_topic_arn" {
+  description = "SNS topic ARN"
+  value = aws_sns_topic.autoscaling_notifications.arn
+}

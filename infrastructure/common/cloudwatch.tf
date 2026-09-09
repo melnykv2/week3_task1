@@ -8,7 +8,7 @@ resource "aws_cloudwatch_event_rule" "autoscaling_events" {
     ]
 
     detail-type = [
-      "EC2 Instance Launch Successful"
+      "EC2 Instance Launch Successful",
       "EC2 Instance Terminate Successful"
     ]
 
