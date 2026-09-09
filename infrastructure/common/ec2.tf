@@ -16,6 +16,10 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
   }
 
   user_data = base64encode(file("../../user_data/user_data.sh"))
+
+  tags = {
+    Name = "NodeJS-Launch-Template"
+  }
 }
 
 resource "aws_lb_target_group" "nodejs-target-group" {
@@ -36,6 +40,10 @@ resource "aws_lb_target_group" "nodejs-target-group" {
     interval = 15
     timeout = 5
   }
+
+  tags = {
+    Name = "NodeJS-Target-Group"
+  }
 }
 
 resource "aws_lb" "nodejs-alb" {
@@ -47,6 +55,10 @@ resource "aws_lb" "nodejs-alb" {
     aws_subnet.public_subnet_a.id,
     aws_subnet.public_subnet_c.id
   ]
+
+  tags = {
+    Name = "NodeJS-Load-Balancer"
+  }
 }
 
 resource "aws_lb_listener" "nodejs-alb-listener" {
@@ -56,6 +68,10 @@ resource "aws_lb_listener" "nodejs-alb-listener" {
   default_action {
     type = "forward"
     target_group_arn = aws_lb_target_group.nodejs-target-group.arn
+  }
+
+  tags = {
+    Name = "NodeJS-ALB-Listener"
   }
 }
 
@@ -100,5 +116,9 @@ module "nodejs-asg" {
         estimated_instance_warmup = 150
       }
     }
+  }
+
+  tags = {
+    Name = "NodeJS-ASG"
   }
 }
