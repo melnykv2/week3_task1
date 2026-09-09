@@ -49,7 +49,7 @@ resource "aws_lb" "nodejs-alb" {
   ]
 }
 
-resource "aws_lb_listener" "Nodejs-alb-listener" {
+resource "aws_lb_listener" "nodejs-alb-listener" {
   load_balancer_arn = aws_lb.nodejs-alb.arn
   port = 80
   protocol = "HTTP"
@@ -59,22 +59,46 @@ resource "aws_lb_listener" "Nodejs-alb-listener" {
   }
 }
 
-module "asg" {
+module "nodejs-asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
+  version = "9.3.1"
   name = "NodeJS-ASG"
+  instance_name = "NodeJS-Instance"
 
   min_size = 1
   max_size = 6
   desired_capacity = 2
   wait_for_capacity_timeout = "5m"
+  default_instance_warmup = 150
   health_check_type = "ELB"
-  vpc_zone_identifier = ["aws_subnet.private_subnet_a.id", "aws_subnet.private_subnet_c.id"]
+  vpc_zone_identifier = [
+    aws_subnet.private_subnet_a.id,
+    aws_subnet.private_subnet_c.id
+  ]
 
   create_launch_template = false
-  launch_template_name = aws_launch_template.nodejs-launch-template.name
-  launch_template_version = aws_launch_template.nodejs-launch-template.latest_version
+  launch_template_id = aws_launch_template.nodejs-demo-launch-template.id
+  launch_template_version = aws_launch_template.nodejs-demo-launch-template.latest_version
 
-  target_group_arn = aws_lb_target_group.nodejs-target-group.arn
+  traffic_source_attachments = {
+    nodejs-alb = {
+      traffic_source_identifier = aws_lb_target_group.nodejs-target-group.arn
+      traffic_source_type = "elbv2"
+    }
+  }
 
-  instance_name = "NodeJS-Instance"
+  default_cooldown = 200
+
+  scaling_policies = {
+    nodejs-scaling-policy = {
+      policy_type = "TargetTrackingScaling"
+      target_tracking_configuration = {
+        predefined_metric_specification = {
+          predefined_metric_type = "ASGAverageCPUUtilization"
+        }
+        target_value = 50
+        estimated_instance_warmup = 150
+      }
+    }
+  }
 }
