@@ -26,19 +26,12 @@ variable "availability_zones" {
 variable "ami_id" {
   description = "AMI ID for EC2 instances"
   type        = string
-  default     = "ami-0fb110df4c5094d21"
 }
 
 variable "instance_type" {
   description = "EC2 instance type used by the Auto Scaling group."
   type        = string
   default     = "t3.micro"
-}
-
-variable "node_key" {
-  description = "Name of the SSH key pair for the Node.js instances."
-  type        = string
-  default     = "nodejs-demo"
 }
 
 variable "asg_min_size" {

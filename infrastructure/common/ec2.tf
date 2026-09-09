@@ -3,7 +3,6 @@ resource "aws_launch_template" "nodejs-demo-launch-template" {
   image_id = var.ami_id
   instance_type = var.instance_type
   update_default_version = true
-  key_name = var.node_key
 
   monitoring {
     enabled = true
