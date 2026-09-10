@@ -3,7 +3,7 @@ output "vpc_id" {
   value = aws_vpc.nodejs-demo-vpc.id
 }
 
-output "publc_subnet_ids" {
+output "public_subnet_ids" {
   description = "Public subnet IDs"
   value = aws_subnet.public_subnet[*].id
 }
