@@ -86,27 +86,6 @@ resource "aws_route_table_association" "private_subnet_association" {
   route_table_id = aws_route_table.private-route-table.id
 }
 
-/*
-resource "aws_route_table_association" "public-route-table-association-a" {
-  subnet_id      = aws_subnet.public_subnet_a.id
-  route_table_id = aws_route_table.public-route-table.id
-}
-
-resource "aws_route_table_association" "public-route-table-association-c" {
-  subnet_id      = aws_subnet.public_subnet_c.id
-  route_table_id = aws_route_table.public-route-table.id
-}
-
-resource "aws_route_table_association" "private-route-table-association-a" {
-  subnet_id      = aws_subnet.private_subnet_a.id
-  route_table_id = aws_route_table.private-route-table.id
-}
-
-resource "aws_route_table_association" "private-route-table-association-c" {
-  subnet_id      = aws_subnet.private_subnet_c.id
-  route_table_id = aws_route_table.private-route-table.id
-}
-*/
 resource "aws_security_group" "launch-template-sg" {
   name = "launch-template-sg"
   description = "Allow SSH and HTTP access"
