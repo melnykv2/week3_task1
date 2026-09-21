@@ -1,6 +1,21 @@
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["591542846629"]
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-ecs-hvm-*-kernel-6.1-x86_64"]
+  }
+
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 resource "aws_launch_template" "nodejs-demo-launch-template" {
   name = "NodeJS-Launch-Template"
-  image_id = var.ami_id
+  image_id = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   update_default_version = true
 
