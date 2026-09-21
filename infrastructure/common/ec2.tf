@@ -135,4 +135,5 @@ module "nodejs-asg" {
   tags = {
     Name = "NodeJS-ASG"
   }
+  depends_on = [ aws_nat_gateway.nodejs-nat, aws_route_table.private-route-table, aws_route_table_association.private_subnet_association ]
 }
